@@ -1,0 +1,13 @@
+4. Granularidad de Priorización por "Bolsa" (Categorías)
+Driver Independiente por Bolsa: ¡Esta es una diferencia gigantesca! El Excel te permite que la bolsa de "Reposición" se priorice mirando el MAX (RMI/VIR), pero que la bolsa de "Tarifa" se priorice mirando solo el RMI.
+En la Web App: El modelo matemático aplica un solo criterio global.
+5. Categorización del Presupuesto (La Matriz de Resultados)
+El Excel tiene una tabla inmensa abajo llamada "Detalle Resumen de Resultados" que desglosa el dinero de una forma muy específica, usando conceptos que a nuestra web le faltan en la UI:
+
+Pre-Adjudicado / Adjudicado Previamente: Es la plata que ya está comprometida por proyectos estructurales o arrastres. Son proyectos que entran a la bolsa de forma Forzada.
+Agregados (Adjudicados en la Priorización): Es la plata "nueva" que el algoritmo decidió invertir en proyectos que competían por los fondos sobrantes.
+Límites por Bolsa por Año: El Excel calcula y muestra explícitamente cuánto es el límite en MM$ (dinero) para la categoría "Mejoras" en el año 2023.
+En la Web App: Nosotros tenemos los presupuestos (en el panel de configuración) y un KPI global de "Presupuesto Consumido", pero carecemos de esa matriz gigante que separa exactamente cuánta plata por categoría año a año es "Obligatoria (Pre-adjudicada)" vs "Nueva (Agregada)".
+6. Control de Estados del Proyecto
+El Excel tiene reglas duras basadas en estados específicos: "Adjudicado", "Adjudicado Parcial", "Solicitado", "Sin Presupuesto". El "Adjudicado" entra directo al plan (es Forzado), el último sale del plan.
+En la Web App: Nosotros simplificamos todo eso en un checkbox llamado es_estructural (Forzado = Sí/No). Perdemos la riqueza de saber en qué estado en la vida real está el proyecto si no es estructural.

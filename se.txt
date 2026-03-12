@@ -1,0 +1,34 @@
+Correctivo (Obligatorio)
+
+Gestion de Riesgo (Obligatorio)
+
+Mejoras Vida Útil 
+
+Normativo (Obligatorio)
+
+Otros(Forzar Autos) 
+
+PD Cambio de estándar (Obligatorio)
+
+Plan de desarrollo (Obligatorio)
+
+Rentabilidad 
+
+Activación Financiera(Antiguo pero hay que dejarlo) 
+
+
+
+MAX ya no es tan importante
+
+Eliminar Limites por categoria(porcentajes) ya que no son necesarios,
+
+
+
+Viejas
+
+Tarifa
+Crecimiento
+Reposición
+Mejoras
+Activación Financiera
+Filiales

@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:15
+    container_name: capex_db
+    environment:
+      POSTGRES_USER: capex_user
+      POSTGRES_PASSWORD: capex_password
+      POSTGRES_DB: capex_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U capex_user -d capex_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: capex_backend
+    environment:
+      POSTGRES_USER: capex_user
+      POSTGRES_PASSWORD: capex_password
+      POSTGRES_DB: capex_db
+      POSTGRES_SERVER: db
+      POSTGRES_PORT: "5432"
+    ports:
+      - "8001:8001"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

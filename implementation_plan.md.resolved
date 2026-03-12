@@ -1,0 +1,71 @@
+# Plan: Paridad Final Excel vs App CAPEX Prioritizer
+
+5 cambios para cerrar la brecha funcional con el Excel original.
+
+---
+
+## 1. Filas "Rechazados" y "Resultado Total" en la Matriz
+
+**Backend** ([main.py](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/backend/main.py)):
+- En [_build_budget_matrix()](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/backend/main.py#356-433), agregar campo `rechazado` por categoría×año sumando los costos de `result["rejected"]`
+- Ajustar la fila `TOTAL` para incluir `rechazado`
+
+**Frontend** ([Dashboard.jsx](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/frontend/src/Dashboard.jsx)):
+- Agregar **2 filas nuevas** en el render de la Matriz:
+  - **Rechazado** (badge rojo) — muestra el costo de proyectos rechazados
+  - **Resultado** (badge gris) — suma Comprometido + Optimizado (total ejecutado)
+- El `rowSpan` de la celda de categoría pasa de 3 a 5
+
+---
+
+## 2. Gráfico de Bolsas (barras por año + línea de límite)
+
+**Frontend** ([Dashboard.jsx](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/frontend/src/Dashboard.jsx)):
+- **Reemplazar** el gráfico de barras actual "Presupuesto por Categoría" por uno más detallado:
+  - Eje X: categorías
+  - Barras agrupadas por año (Año 0-4), mostrando el gasto total (comprometido + optimizado)
+  - **Línea superpuesta** amarilla/naranja con el límite por categoría (como hace el Excel)
+- Usar `ComposedChart` de Recharts (combina `Bar` + `Line`)
+- Los datos se construyen desde `results.budget_matrix`
+
+---
+
+## 3. Filtro "Mínimo a Priorizar"
+
+**Backend** ([optimizer.py](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/backend/optimizer.py)):
+- En [run_optimization()](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/backend/optimizer.py#22-135) y [run_ranker()](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/backend/optimizer.py#137-229), después de separar los proyectos por estado, **filtrar** `competing_projects` para excluir los que tengan costo total < `settings["minimo_priorizar_uf"]`
+- Los proyectos filtrados van a `rejected_projects` con algún indicador de "bajo mínimo"
+
+**Backend** ([main.py](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/backend/main.py)):
+- En el endpoint `/optimize/`, pasar `minimo_priorizar_uf` dentro de `settings_dict`
+
+---
+
+## 4. Resumen Ejecutivo Compacto (arriba de resultados)
+
+**Frontend** ([Dashboard.jsx](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/frontend/src/Dashboard.jsx)):
+- Agregar un **mini-panel** entre los KPIs y los gráficos con una tabla compacta:
+  - Columnas: Año 0 | Año 1 | Año 2 | Año 3 | Año 4
+  - Filas: **Límite** | **Resultado** | **Restante**
+- Datos tomados directamente de `settings.presupuesto_anual` y `results.remaining_budget`
+- Estilo: card con fondo sutil, texto pequeño, sin scroll
+
+---
+
+## 5. Conversión UF → CLP
+
+**Frontend** ([Dashboard.jsx](file:///c:/Users/Asus/OneDrive/Escritorio/Proyectos/Priorizacion-Prototipo/frontend/src/Dashboard.jsx)):
+- Agregar un **toggle** pequeño (UF / CLP) en la esquina de los resultados
+- Cuando está en CLP, multiplicar todos los montos por `settings.valor_uf` antes de mostrarlos
+- Cambiar el label de las columnas de "(UF)" a "(CLP)" dinámicamente
+- El toggle solo afecta la **vista**, no los datos
+
+---
+
+## Verificación
+
+- Ejecutar POA y PMP, verificar que las filas Rechazado y Resultado aparecen correctos
+- Verificar que el gráfico de bolsas muestra barras por año con línea de límite
+- Configurar un `minimo_priorizar_uf` alto y verificar que proyectos chicos se filtran
+- Verificar el resumen ejecutivo con datos reales
+- Toggle UF/CLP y confirmar que los montos se multiplican correctamente

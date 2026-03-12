@@ -1,0 +1,53 @@
+
+uvicorn main:app --reload --port 8001
+
+
+
+
+
+1. Diccionario de Términos Clave
+CAPEX (Capital Expenditure): Es el dinero destinado a inversiones. Son proyectos que dejan un activo para la empresa (construir una planta, comprar servidores, desarrollar un software). No es para pagar sueldos o la luz del día a día (eso es OPEX).
+
+POA (Plan Operativo Anual): Es el presupuesto y la lista de proyectos que se van a ejecutar estrictamente en el año actual. Es la visión a corto plazo.
+
+PMP (Plan de Mediano Plazo): Es la planificación de inversiones con una mirada a 5 años. Como construir una planta de tratamiento toma tiempo, la empresa necesita saber cuánta plata necesitará el Año 1, Año 2, Año 3, etc.
+
+SISS (Superintendencia de Servicios Sanitarios): Es el organismo del Estado que fiscaliza a Aguas Andinas. Si la SISS exige por ley que se construya un estanque de seguridad, ese proyecto se debe hacer obligatoriamente, sin importar el costo.
+
+RMI (Risk Management Index): Es una nota que mide el riesgo. Calcula qué tan probable es que una infraestructura falle y qué tan catastrófico sería (por ejemplo, dejar a una comuna sin agua). Mientras mayor es el RMI que un proyecto logra bajar, más importante es el proyecto.
+
+VIR (Valor de Importancia Relativa): Es una "súper nota" del 0 al 100 que resume todo: considera el riesgo (RMI), si el proyecto es rentable (VAN/TIR) y qué tan alineado está con las metas de la compañía.
+
+2. Cómo funciona el Excel, paso a paso
+El archivo "Herramienta UC.xlsm" es un sistema automatizado que procesa datos para entregar una propuesta de presupuesto. Funciona en las siguientes etapas:
+
+Paso 1: Definir las reglas del juego (Panel de Control)
+Esta es la interfaz principal. Aquí el usuario le dice al sistema con cuántos recursos cuenta.
+
+Se ingresa el presupuesto total disponible en UF para los próximos 5 años.
+
+Se definen límites máximos por tipo de proyecto. Por ejemplo, se indica que no se puede gastar más del 20% del presupuesto total solo en "Tecnología", para asegurar que quede dinero para "Renovación de Tuberías".
+
+Paso 2: La lista de deseos (Hoja BDD - Base de Datos)
+Aquí están todos los proyectos que las distintas gerencias quieren hacer. Cada fila es un proyecto y tiene columnas con todos sus datos: cuánto cuesta, quién lo pide, su nota de riesgo (RMI), su nota global (VIR) y si es un proyecto "Estructural" o no.
+
+Paso 3: El pase VIP (Ingreso Directo)
+Antes de que el Excel empiece a calcular, hace un filtro automático. Toma todos los proyectos que tienen la etiqueta de "Estructurales" (como los exigidos por la SISS o construcciones que ya empezaron el año anterior y no se pueden dejar a medias) y les asigna el dinero inmediatamente.
+
+Ejemplo: Si el presupuesto es 1.000 y los proyectos estructurales cuestan 400, el Excel los aprueba y deja 600 para el resto. Estos 400 no compiten, pasan directo.
+
+Paso 4: La Competencia (Procesador y Optimizador)
+Aquí entra la matemática pesada (las macros en VBA). Para repartir los 600 restantes entre los demás proyectos (los "Discrecionales"), el usuario puede elegir dos caminos:
+
+Opción A (Rankeador): El Excel simplemente ordena los proyectos de mayor a menor según su nota VIR o RMI. Empieza a aprobar el #1, luego el #2, y así sucesivamente hasta que se acaban los 600. Es un método simple pero a veces ineficiente, porque podría sobrar dinero que no alcanza para el siguiente proyecto de la lista.
+
+Opción B (Priorizador / Optimizador): Utiliza un algoritmo de optimización (el modelo de la mochila). El Excel prueba miles de combinaciones posibles para encontrar el "paquete" exacto de proyectos que, sumados, entreguen el mayor puntaje de beneficio total sin pasarse de los 600 y respetando los límites por categoría.
+
+Paso 5: El Veredicto (Resultados y Gráficas)
+Una vez que la macro termina de pensar, entrega el resultado en dos hojas limpias:
+
+Resultado: Una tabla que dice claramente qué proyectos tienen el estado "Priorizado" (se hacen) y cuáles "Postergados" (se quedan sin plata este año).
+
+Gráficas: Un panel visual donde se muestra cómo quedó repartida la torta del presupuesto (cuánto dinero se llevó cada gerencia, cuánto se gastó en mantención vs. crecimiento, etc.).
+
+En síntesis, este Excel toma una lista desordenada de peticiones que antes se discutían durante meses en reuniones, y mediante criterios matemáticos y financieros, arma un plan de inversión a 5 años en un par de minutos.
